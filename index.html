@@ -1,1 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EventEase – Two‑Sided Marketplace for Event Pros & Customers</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #FFFCF9; color: #1E1B2F; scroll-behavior: smooth; }
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 28px; }
+    .navbar { position: sticky; top: 0; background: rgba(255,252,249,0.96); backdrop-filter: blur(12px); padding: 16px 0; border-bottom: 1px solid #FFE6DD; z-index: 100; }
+    .nav-flex { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .logo { font-size: 1.8rem; font-weight: 800; background: linear-gradient(135deg, #D84B6E, #F28B5C); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .nav-links { display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap; }
+    .nav-links a { text-decoration: none; font-weight: 600; color: #2D2A44; cursor: pointer; transition: 0.2s; }
+    .nav-links a:hover, .active-link { color: #D84B6E; }
+    .user-greeting { background: #FFE0D6; padding: 6px 14px; border-radius: 40px; font-weight: 600; font-size: 0.9rem; }
+    .logout-btn { background: none; border: none; color: #B83B5E; font-weight: 700; cursor: pointer; }
+    .btn-primary { background: #D84B6E; color: white; padding: 12px 28px; border-radius: 40px; font-weight: 700; border: none; cursor: pointer; transition: 0.2s; }
+    .btn-outline { background: transparent; border: 2px solid #D84B6E; color: #D84B6E; padding: 10px 24px; border-radius: 40px; font-weight: 700; cursor: pointer; }
+    .hero { padding: 50px 0; background: linear-gradient(130deg, #FFF3EC 0%, #FFFFFF 100%); }
+    .hero-grid { display: flex; flex-wrap: wrap; align-items: center; gap: 40px; }
+    .hero-badge { background: #FFE0D6; color: #B83B5E; display: inline-block; padding: 6px 18px; border-radius: 50px; margin-bottom: 20px; font-weight: 700; }
+    .hero-title { font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; }
+    .hero-title span { background: linear-gradient(to right, #D84B6E, #F28B5C); background-clip: text; -webkit-background-clip: text; color: transparent; }
+    .search-row { display: flex; background: white; border-radius: 80px; padding: 5px 5px 5px 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.05); max-width: 500px; }
+    .search-row input { flex:1; border: none; padding: 14px 0; outline: none; background: transparent; }
+    .search-row button { background: #D84B6E; border: none; color: white; padding: 10px 24px; border-radius: 60px; font-weight: 700; cursor: pointer; }
+    section { padding: 60px 0; }
+    .section-title { font-size: 2.2rem; font-weight: 800; background: linear-gradient(135deg, #B83B5E, #6A2C70); background-clip: text; -webkit-background-clip: text; color: transparent; text-align: center; margin-bottom: 16px; }
+    .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 32px; }
+    .service-card { background: white; border-radius: 32px; padding: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.04); border: 1px solid #FBE6DE; transition: 0.2s; }
+    .service-icon { font-size: 2.5rem; color: #D84B6E; margin-bottom: 16px; }
+    .price { font-weight: 800; font-size: 1.3rem; color: #6A2C70; margin: 12px 0; }
+    .vendor-badge { font-size: 0.75rem; background: #F3E8FF; color: #6A2C70; border-radius: 20px; padding: 4px 10px; display: inline-block; margin-bottom: 8px; }
+    .order-btn { background: #1E1B2F; color: white; width: 100%; padding: 12px; border-radius: 40px; border: none; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .cart-section, .orders-section, .dna-card, .moodboard-card, .vendor-card { background: #FFF9F6; border-radius: 48px; padding: 28px; margin: 20px 0; }
+    .cart-item, .order-item, .booking-item { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid #FFDFD3; flex-wrap: wrap; }
+    .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: white; max-width: 500px; width: 90%; padding: 32px; border-radius: 48px; max-height: 80vh; overflow-y: auto; }
+    .modal input, .modal select, .modal textarea { width: 100%; margin: 12px 0; padding: 14px; border-radius: 60px; border: 1px solid #ddd; }
+    .toast { position: fixed; bottom: 20px; right: 20px; background: #1E1B2F; color: white; padding: 12px 24px; border-radius: 50px; opacity: 0; transition: 0.2s; z-index: 200; }
+    .quiz-option { background: white; border: 1px solid #FFD9CE; border-radius: 60px; padding: 10px 20px; margin: 8px; cursor: pointer; display: inline-block; }
+    .quiz-option.selected { background: #D84B6E; color: white; }
+    .bundle-tag { background: #6A2C70; color: white; border-radius: 30px; padding: 4px 12px; font-size: 0.75rem; display: inline-block; margin-left: 10px; }
+    footer { background: #1E1B2F; color: #D9D2DB; text-align: center; padding: 32px 0; margin-top: 40px; }
+    @media (max-width: 700px) { .hero-title { font-size: 2rem; } .nav-links { gap: 1rem; } }
+  </style>
+</head>
+<body>
 
+<div class="navbar">
+  <div class="container nav-flex">
+    <div class="logo"><i class="fas fa-handshake"></i> EventEase Marketplace</div>
+    <div class="nav-links" id="navLinks">
+      <a id="navServices" onclick="showSection('services')">Browse Services</a>
+      <a id="navCart" onclick="showSection('cart')">My Order</a>
+      <a id="navOrders" onclick="showSection('orders')">My Events</a>
+      <a id="navEventDNA" onclick="showSection('dna')">EventDNA</a>
+      <a id="navMood" onclick="showSection('moodboard')">Mood Board</a>
+      <a id="navVendorDash" style="display:none;" onclick="showSection('vendorDashboard')">Vendor Dashboard</a>
+      <div id="authNav"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Hero (visible when logged out) -->
+<section id="heroSection" class="hero">
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <div class="hero-badge"><i class="fas fa-dna"></i> Two‑sided marketplace</div>
+      <h1 class="hero-title">Hire top event pros <span>or</span> grow your event business</h1>
+      <p class="hero-desc">Customers: Book planners, chefs, photographers. Vendors: List your services and get bookings.</p>
+      <button class="btn-primary" style="margin-top: 20px;" onclick="openAuthModal('register')"><i class="fas fa-user-plus"></i> Sign up – it's free</button>
+    </div>
+    <div style="flex:0.8; background:#FFEDE4; border-radius:48px; padding:30px; text-align:center;">
+      <i class="fas fa-chart-line" style="font-size:4rem; color:#D84B6E;"></i>
+      <p style="margin-top:12px;">✨ Join 500+ vendors</p>
+    </div>
+  </div>
+</section>
+
+<!-- Customer: Browse Services -->
+<div id="servicesSection" class="container" style="display:none;">
+  <h2 class="section-title">Services from our vendors</h2>
+  <div class="search-row" style="margin: 0 auto 30px auto; max-width: 500px;">
+    <i class="fas fa-search"></i>
+    <input type="text" id="customerSearch" placeholder="Search services...">
+    <button id="customerSearchBtn">Go</button>
+  </div>
+  <div id="servicesGrid" class="services-grid"></div>
+</div>
+
+<!-- Customer Cart -->
+<div id="cartSection" class="container" style="display:none;">
+  <div class="cart-section">
+    <h2><i class="fas fa-shopping-cart"></i> My Order</h2>
+    <div id="cartItemsList"></div>
+    <div id="cartTotal" class="price" style="text-align:right;"></div>
+    <button id="proceedCheckout" class="btn-primary" style="width:100%;">Proceed to Checkout</button>
+  </div>
+  <div id="checkoutForm" style="display:none; margin-top:24px; background:#FFF9F6; border-radius:48px; padding:28px;">
+    <h3>Event details</h3>
+    <input type="text" id="eventAddress" placeholder="Address / Venue" style="width:100%; padding:12px; margin:8px 0; border-radius:40px;">
+    <input type="date" id="eventDate" style="width:100%; padding:12px; margin:8px 0; border-radius:40px;">
+    <textarea id="eventNotes" rows="2" placeholder="Special requests"></textarea>
+    <button id="placeOrderBtn" class="btn-primary">Place Order</button>
+  </div>
+</div>
+
+<!-- Customer Order History -->
+<div id="ordersSection" class="container" style="display:none;">
+  <div class="orders-section">
+    <h2><i class="fas fa-history"></i> My Event Orders</h2>
+    <div id="ordersList"></div>
+  </div>
+</div>
+
+<!-- EventDNA Quiz -->
+<div id="dnaSection" class="container" style="display:none;">
+  <div class="dna-card">
+    <h2><i class="fas fa-dna"></i> Your EventDNA</h2>
+    <div id="quizContainer"></div>
+    <button id="submitQuiz" class="btn-primary" style="margin-top: 20px;">Discover my DNA</button>
+    <div id="dnaResult" style="margin-top: 30px;"></div>
+  </div>
+</div>
+
+<!-- Mood Board -->
+<div id="moodboardSection" class="container" style="display:none;">
+  <div class="moodboard-card">
+    <h2><i class="fas fa-images"></i> Vision Mood Board</h2>
+    <div style="display: flex; gap: 12px; margin-bottom: 24px;">
+      <input type="text" id="imageUrlInput" placeholder="Paste image URL" style="flex:1; padding:12px; border-radius:60px;">
+      <button id="addImageBtn" class="btn-outline">+ Add</button>
+    </div>
+    <div id="moodBoardGrid" style="display: flex; flex-wrap: wrap; gap: 16px;"></div>
+    <button id="saveMoodBoard" class="btn-primary" style="margin-top: 24px;">Save Mood Board</button>
+  </div>
+</div>
+
+<!-- Vendor Dashboard -->
+<div id="vendorDashboard" class="container" style="display:none;">
+  <div class="vendor-card">
+    <h2><i class="fas fa-store"></i> My Vendor Dashboard</h2>
+    <div style="margin-bottom: 30px;">
+      <button class="btn-primary" onclick="showAddServiceModal()"><i class="fas fa-plus"></i> Add New Service</button>
+    </div>
+    <h3>My Services</h3>
+    <div id="vendorServicesList"></div>
+    <hr style="margin: 30px 0;">
+    <h3>My Bookings (Orders for my services)</h3>
+    <div id="vendorBookingsList"></div>
+  </div>
+</div>
+
+<!-- Modals -->
+<div id="loginModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModals()">&times;</span><h3>Login</h3><input type="email" id="loginEmail" placeholder="Email"><input type="password" id="loginPassword" placeholder="Password"><button onclick="login()" class="btn-primary">Login</button><p>No account? <a onclick="openAuthModal('register')">Register</a></p></div></div>
+<div id="registerModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModals()">&times;</span><h3>Register</h3><input type="text" id="regName" placeholder="Full name"><input type="email" id="regEmail" placeholder="Email"><input type="password" id="regPassword" placeholder="Password"><select id="regRole"><option value="customer">I want to hire event pros (Customer)</option><option value="vendor">I am an event professional (Vendor)</option></select><button onclick="register()" class="btn-primary">Sign Up</button></div></div>
+<div id="addServiceModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModals()">&times;</span><h3>Add New Service</h3><input type="text" id="serviceName" placeholder="Service name (e.g., Wedding Planning)"><input type="text" id="serviceDesc" placeholder="Short description"><input type="number" id="servicePrice" placeholder="Price ($)"><select id="serviceIcon"><option value="fas fa-clipboard-list">Planner</option><option value="fas fa-utensils">Chef</option><option value="fas fa-camera">Photographer</option><option value="fas fa-gift">Decorator</option><option value="fas fa-microphone-alt">MC</option><option value="fas fa-cake-candles">Cake</option></select><button onclick="addNewService()" class="btn-primary">Add Service</button></div></div>
+<div id="editServiceModal" class="modal"><div class="modal-content"><span class="close-modal" onclick="closeModals()">&times;</span><h3>Edit Service</h3><input type="hidden" id="editServiceId"><input type="text" id="editServiceName" placeholder="Name"><input type="text" id="editServiceDesc" placeholder="Description"><input type="number" id="editServicePrice" placeholder="Price"><select id="editServiceIcon"></select><button onclick="updateService()" class="btn-primary">Save Changes</button></div></div>
+
+<div id="toastMsg" class="toast"></div>
+
+<script>
+  // ---------- DATA MANAGEMENT ----------
+  let currentUser = null;
+  function getUsers() { return JSON.parse(localStorage.getItem('eventease_users') || '[]'); }
+  function saveUsers(users) { localStorage.setItem('eventease_users', JSON.stringify(users)); }
+  function syncUserData() {
+    if(!currentUser) return;
+    let users = getUsers();
+    const idx = users.findIndex(u => u.email === currentUser.email);
+    if(idx !== -1) { users[idx] = currentUser; saveUsers(users); sessionStorage.setItem('eventease_current', JSON.stringify(currentUser)); }
+  }
+  function loadStorage() { const session = sessionStorage.getItem('eventease_current'); if(session) currentUser = JSON.parse(session); else currentUser = null; updateUIForAuth(); }
+
+  // Helper: Get all services from all vendors
+  function getAllServices() {
+    const users = getUsers();
+    let allServices = [];
+    users.forEach(user => {
+      if(user.role === 'vendor' && user.listings) {
+        user.listings.forEach(service => {
+          allServices.push({ ...service, vendorName: user.name, vendorEmail: user.email });
+        });
+      }
+    });
+    return allServices;
+  }
+
+  // ---------- AUTH ----------
+  function register() {
+    const name = document.getElementById('regName').value.trim();
+    const email = document.getElementById('regEmail').value.trim();
+    const pwd = document.getElementById('regPassword').value;
+    const role = document.getElementById('regRole').value;
+    if(!name || !email || !pwd) { showToast("All fields required"); return; }
+    let users = getUsers();
+    if(users.find(u => u.email === email)) { showToast("Email already exists"); return; }
+    const newUser = { email, name, password: pwd, role, cart: [], orders: [], listings: [], moodBoard: [] };
+    users.push(newUser);
+    saveUsers(users);
+    showToast("Registration successful! Please login.");
+    closeModals();
+    openAuthModal('login');
+  }
+
+  function login() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pwd = document.getElementById('loginPassword').value;
+    const users = getUsers();
+    const user = users.find(u => u.email === email && u.password === pwd);
+    if(!user) { showToast("Invalid credentials"); return; }
+    currentUser = JSON.parse(JSON.stringify(user));
+    sessionStorage.setItem('eventease_current', JSON.stringify(currentUser));
+    closeModals();
+    showToast(`Welcome ${currentUser.name} (${currentUser.role})`);
+    updateUIForAuth();
+    if(currentUser.role === 'vendor') showSection('vendorDashboard');
+    else showSection('services');
+    renderCustomerServices();
+    renderCartPage();
+    renderOrders();
+    renderMoodBoard();
+    if(currentUser.role === 'vendor') renderVendorDashboard();
+  }
+
+  function logout() { sessionStorage.removeItem('eventease_current'); currentUser = null; updateUIForAuth(); showSection('heroSection'); showToast("Logged out"); }
+
+  function updateUIForAuth() {
+    const authNav = document.getElementById('authNav');
+    const navServices = document.getElementById('navServices');
+    const navCart = document.getElementById('navCart');
+    const navOrders = document.getElementById('navOrders');
+    const navEventDNA = document.getElementById('navEventDNA');
+    const navMood = document.getElementById('navMood');
+    const navVendor = document.getElementById('navVendorDash');
+    if(currentUser) {
+      authNav.innerHTML = `<span class="user-greeting">👋 ${currentUser.name} (${currentUser.role})</span> <button class="logout-btn" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>`;
+      if(currentUser.role === 'customer') {
+        navServices.style.display = 'inline-block';
+        navCart.style.display = 'inline-block';
+        navOrders.style.display = 'inline-block';
+        navEventDNA.style.display = 'inline-block';
+        navMood.style.display = 'inline-block';
+        navVendor.style.display = 'none';
+      } else {
+        navServices.style.display = 'none';
+        navCart.style.display = 'none';
+        navOrders.style.display = 'none';
+        navEventDNA.style.display = 'none';
+        navMood.style.display = 'none';
+        navVendor.style.display = 'inline-block';
+      }
+      document.getElementById('heroSection').style.display = 'none';
+    } else {
+      authNav.innerHTML = `<button class="btn-outline" style="padding:6px 16px;" onclick="openAuthModal('login')">Login</button>`;
+      document.getElementById('heroSection').style.display = 'block';
+      showSection('heroSection');
+    }
+  }
+
+  // ---------- CUSTOMER FUNCTIONS ----------
+  function addToCart(service) {
+    if(!currentUser || currentUser.role !== 'customer') { showToast("Please login as customer"); openAuthModal('login'); return; }
+    if(currentUser.cart.find(i => i.id === service.id)) { showToast("Already in cart"); return; }
+    currentUser.cart.push({ id: service.id, name: service.name, price: service.price, vendorEmail: service.vendorEmail });
+    syncUserData();
+    renderCartPage();
+    showToast(`${service.name} added to cart`);
+  }
+
+  function removeFromCart(cartIdx) { currentUser.cart.splice(cartIdx, 1); syncUserData(); renderCartPage(); }
+  function renderCartPage() {
+    if(!currentUser || currentUser.role !== 'customer') return;
+    const container = document.getElementById('cartItemsList'); const totalDiv = document.getElementById('cartTotal');
+    if(currentUser.cart.length === 0) { container.innerHTML = '<div style="padding:20px;text-align:center;">Cart empty</div>'; totalDiv.innerHTML = ''; return; }
+    let total = 0, html = '';
+    currentUser.cart.forEach((item, idx) => { total += item.price; html += `<div class="cart-item"><span><strong>${item.name}</strong> – $${item.price}</span> <button class="btn-outline" style="padding:4px 12px;" onclick="removeFromCart(${idx})">Remove</button></div>`; });
+    container.innerHTML = html; totalDiv.innerHTML = `Total: $${total}`;
+  }
+  function showCheckout() { if(!currentUser || currentUser.cart.length===0) { showToast("Cart empty"); return; } document.getElementById('checkoutForm').style.display = 'block'; document.getElementById('proceedCheckout').style.display = 'none'; }
+  function placeOrder() {
+    const address = document.getElementById('eventAddress').value; const date = document.getElementById('eventDate').value;
+    if(!address || !date) { showToast("Fill address & date"); return; }
+    const total = currentUser.cart.reduce((s,i)=> s+i.price,0);
+    const order = { id: Date.now(), date: new Date().toLocaleString(), eventDate: date, address: address, items: [...currentUser.cart], total: total, notes: document.getElementById('eventNotes').value };
+    currentUser.orders.unshift(order);
+    currentUser.cart = [];
+    syncUserData();
+    renderCartPage(); renderOrders();
+    document.getElementById('checkoutForm').style.display = 'none'; document.getElementById('proceedCheckout').style.display = 'block';
+    document.getElementById('eventAddress').value = ''; document.getElementById('eventDate').value = ''; document.getElementById('eventNotes').value = '';
+    showToast("Order placed! Vendors will be notified.");
+    showSection('orders');
+  }
+  function renderOrders() {
+    if(!currentUser || currentUser.role !== 'customer') return;
+    const container = document.getElementById('ordersList');
+    if(!currentUser.orders.length) { container.innerHTML = '<div>No past events yet.</div>'; return; }
+    let html = '';
+    currentUser.orders.forEach(order => { html += `<div class="order-item" style="flex-direction:column; align-items:flex-start;"><strong>Order #${order.id}</strong> – ${order.eventDate} at ${order.address}<br>Items: ${order.items.map(i=>i.name).join(', ')}<br>Total: $${order.total}</div>`; });
+    container.innerHTML = html;
+  }
+
+  function renderCustomerServices(filter="") {
+    let services = getAllServices();
+    if(filter) services = services.filter(s => s.name.toLowerCase().includes(filter.toLowerCase()) || s.desc.toLowerCase().includes(filter));
+    const grid = document.getElementById('servicesGrid');
+    if(services.length === 0) { grid.innerHTML = '<div>No services available. Vendors, please add listings.</div>'; return; }
+    grid.innerHTML = services.map(s => `<div class="service-card"><div class="service-icon"><i class="${s.icon || 'fas fa-briefcase'}"></i></div><div class="vendor-badge">${s.vendorName}</div><div class="service-title">${s.name}</div><div class="service-desc">${s.desc}</div><div class="price">$${s.price}</div><button class="order-btn" onclick='addToCart(${JSON.stringify(s)})'><i class="fas fa-plus-circle"></i> Add to cart</button></div>`).join('');
+  }
+
+  // ---------- VENDOR FUNCTIONS ----------
+  function renderVendorDashboard() {
+    if(!currentUser || currentUser.role !== 'vendor') return;
+    // My listings
+    const listingsDiv = document.getElementById('vendorServicesList');
+    if(!currentUser.listings) currentUser.listings = [];
+    if(currentUser.listings.length === 0) listingsDiv.innerHTML = '<p>You have no services yet. Click "Add New Service".</p>';
+    else {
+      listingsDiv.innerHTML = currentUser.listings.map((s, idx) => `<div class="cart-item"><span><strong>${s.name}</strong> – $${s.price}<br><small>${s.desc}</small></span><span><button class="btn-outline" onclick='editServiceModal(${idx})'>Edit</button> <button class="btn-outline" style="background:#FFE0D6;" onclick='deleteService(${idx})'>Delete</button></span></div>`).join('');
+    }
+    // Bookings: find all orders from all customers that contain this vendor's service ids
+    const users = getUsers();
+    let bookings = [];
+    users.forEach(user => {
+      if(user.role === 'customer' && user.orders) {
+        user.orders.forEach(order => {
+          const vendorItems = order.items.filter(item => currentUser.listings.some(ls => ls.id === item.id));
+          if(vendorItems.length) {
+            bookings.push({ customerName: user.name, customerEmail: user.email, orderId: order.id, eventDate: order.eventDate, address: order.address, items: vendorItems, total: vendorItems.reduce((s,i)=>s+i.price,0) });
+          }
+        });
+      }
+    });
+    const bookingsDiv = document.getElementById('vendorBookingsList');
+    if(bookings.length === 0) bookingsDiv.innerHTML = '<p>No bookings yet.</p>';
+    else {
+      bookingsDiv.innerHTML = bookings.map(b => `<div class="booking-item" style="flex-direction:column;"><strong>Booking from ${b.customerName}</strong> (${b.customerEmail})<br>Event: ${b.eventDate} at ${b.address}<br>Services: ${b.items.map(i=>i.name).join(', ')}<br>Total: $${b.total}</div>`).join('');
+    }
+  }
+
+  function showAddServiceModal() { document.getElementById('addServiceModal').style.display = 'flex'; }
+  function addNewService() {
+    const name = document.getElementById('serviceName').value.trim();
+    const desc = document.getElementById('serviceDesc').value.trim();
+    const price = parseInt(document.getElementById('servicePrice').value);
+    const icon = document.getElementById('serviceIcon').value;
+    if(!name || !desc || isNaN(price)) { showToast("All fields required"); return; }
+    const newId = Date.now();
+    const newService = { id: newId, name, desc, price, icon, vendorEmail: currentUser.email };
+    if(!currentUser.listings) currentUser.listings = [];
+    currentUser.listings.push(newService);
+    syncUserData();
+    renderVendorDashboard();
+    closeModals();
+    showToast("Service added");
+    document.getElementById('serviceName').value = ''; document.getElementById('serviceDesc').value = ''; document.getElementById('servicePrice').value = '';
+  }
+  function editServiceModal(idx) {
+    const service = currentUser.listings[idx];
+    document.getElementById('editServiceId').value = idx;
+    document.getElementById('editServiceName').value = service.name;
+    document.getElementById('editServiceDesc').value = service.desc;
+    document.getElementById('editServicePrice').value = service.price;
+    const iconSelect = document.getElementById('editServiceIcon');
+    iconSelect.innerHTML = `<option value="fas fa-clipboard-list">Planner</option><option value="fas fa-utensils">Chef</option><option value="fas fa-camera">Photographer</option><option value="fas fa-gift">Decorator</option><option value="fas fa-microphone-alt">MC</option><option value="fas fa-cake-candles">Cake</option>`;
+    iconSelect.value = service.icon;
+    document.getElementById('editServiceModal').style.display = 'flex';
+  }
+  function updateService() {
+    const idx = parseInt(document.getElementById('editServiceId').value);
+    const name = document.getElementById('editServiceName').value.trim();
+    const desc = document.getElementById('editServiceDesc').value.trim();
+    const price = parseInt(document.getElementById('editServicePrice').value);
+    const icon = document.getElementById('editServiceIcon').value;
+    if(!name || !desc || isNaN(price)) return;
+    currentUser.listings[idx] = { ...currentUser.listings[idx], name, desc, price, icon };
+    syncUserData();
+    renderVendorDashboard();
+    closeModals();
+    showToast("Service updated");
+  }
+  function deleteService(idx) {
+    if(confirm("Delete this service? It may affect existing carts.")) {
+      currentUser.listings.splice(idx,1);
+      syncUserData();
+      renderVendorDashboard();
+      showToast("Service deleted");
+    }
+  }
+
+  // ---------- EventDNA & Mood Board (same as before, adapt for customers only) ----------
+  let quizAnswers = { vibe: "", size: "", priority: "" };
+  function renderQuiz() { 
+    const container = document.getElementById('quizContainer');
+    container.innerHTML = `<div><h3>1. Vibe?</h3><div id="vibeOptions"></div></div><div><h3>2. Guest count?</h3><div id="sizeOptions"></div></div><div><h3>3. Priority?</h3><div id="priorityOptions"></div></div>`;
+    const vibes = ["Artsy & Unique", "Luxury & Elegant", "Fun & Colorful", "Foodie Focus"];
+    const sizes = ["Intimate (<30)", "Medium (30-100)", "Grand (100+)"];
+    const priorities = ["Perfect Planning", "Amazing Food", "Stunning Decor", "Memorable Photos"];
+    vibes.forEach(v => { let btn = document.createElement('div'); btn.className = 'quiz-option'; btn.innerText = v; btn.onclick = () => { document.querySelectorAll('#vibeOptions .quiz-option').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); quizAnswers.vibe = v; }; document.getElementById('vibeOptions').appendChild(btn); });
+    sizes.forEach(s => { let btn = document.createElement('div'); btn.className = 'quiz-option'; btn.innerText = s; btn.onclick = () => { document.querySelectorAll('#sizeOptions .quiz-option').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); quizAnswers.size = s; }; document.getElementById('sizeOptions').appendChild(btn); });
+    priorities.forEach(p => { let btn = document.createElement('div'); btn.className = 'quiz-option'; btn.innerText = p; btn.onclick = () => { document.querySelectorAll('#priorityOptions .quiz-option').forEach(b=>b.classList.remove('selected')); btn.classList.add('selected'); quizAnswers.priority = p; }; document.getElementById('priorityOptions').appendChild(btn); });
+  }
+  function submitQuiz() {
+    if(!quizAnswers.vibe || !quizAnswers.size || !quizAnswers.priority) { showToast("Answer all"); return; }
+    let allServices = getAllServices();
+    let recs = allServices.slice(0,3);
+    const resultDiv = document.getElementById('dnaResult');
+    resultDiv.innerHTML = `<h3>✨ Your EventDNA: ${quizAnswers.vibe} + ${quizAnswers.size} + ${quizAnswers.priority}</h3><div class="services-grid" style="grid-template-columns:repeat(auto-fit, minmax(200px,1fr));">${recs.map(s => `<div class="service-card"><i class="${s.icon}"></i><strong>${s.name}</strong><br>$${s.price}<br><button class="order-btn" style="margin-top:8px;" onclick='addToCart(${JSON.stringify(s)})'>Add to cart</button></div>`).join('')}</div><div class="bundle-tag">🎁 Bundle discount: 10% off if you book 2+ recommended services!</div>`;
+  }
+  function renderMoodBoard() {
+    if(!currentUser) return;
+    const grid = document.getElementById('moodBoardGrid');
+    const images = currentUser.moodBoard || [];
+    if(images.length === 0) { grid.innerHTML = '<div style="padding:20px; text-align:center;">Add images</div>'; return; }
+    grid.innerHTML = images.map((url, idx) => `<div style="position:relative; width:150px; height:150px; border-radius:24px; overflow:hidden;"><img src="${url}" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='https://placehold.co/150x150/FFD9CE/FFFFFF?text=error'"><button onclick="removeMoodImage(${idx})" style="position:absolute; top:5px; right:5px; background:black; color:white; border-radius:50%; width:24px; height:24px;">✕</button></div>`).join('');
+  }
+  function addMoodImage() { if(!currentUser) { showToast("Login first"); return; } const url = document.getElementById('imageUrlInput').value.trim(); if(!url) return; if(!url.startsWith('http')) { showToast("Valid URL needed"); return; } if(!currentUser.moodBoard) currentUser.moodBoard = []; currentUser.moodBoard.push(url); syncUserData(); renderMoodBoard(); document.getElementById('imageUrlInput').value = ''; showToast("Image added"); }
+  function removeMoodImage(idx) { currentUser.moodBoard.splice(idx,1); syncUserData(); renderMoodBoard(); }
+  function saveMoodBoard() { syncUserData(); showToast("Mood board saved"); }
+
+  // ---------- NAVIGATION ----------
+  function showSection(sectionId) {
+    document.getElementById('heroSection').style.display = 'none';
+    document.getElementById('servicesSection').style.display = 'none';
+    document.getElementById('cartSection').style.display = 'none';
+    document.getElementById('ordersSection').style.display = 'none';
+    document.getElementById('dnaSection').style.display = 'none';
+    document.getElementById('moodboardSection').style.display = 'none';
+    document.getElementById('vendorDashboard').style.display = 'none';
+    if(sectionId === 'heroSection') document.getElementById('heroSection').style.display = 'block';
+    if(sectionId === 'services') { document.getElementById('servicesSection').style.display = 'block'; renderCustomerServices(document.getElementById('customerSearch')?.value || ''); }
+    if(sectionId === 'cart') { document.getElementById('cartSection').style.display = 'block'; renderCartPage(); document.getElementById('proceedCheckout').style.display = 'block'; document.getElementById('checkoutForm').style.display = 'none'; }
+    if(sectionId === 'orders') { document.getElementById('ordersSection').style.display = 'block'; renderOrders(); }
+    if(sectionId === 'dna') { document.getElementById('dnaSection').style.display = 'block'; renderQuiz(); }
+    if(sectionId === 'moodboard') { document.getElementById('moodboardSection').style.display = 'block'; renderMoodBoard(); }
+    if(sectionId === 'vendorDashboard') { document.getElementById('vendorDashboard').style.display = 'block'; renderVendorDashboard(); }
+  }
+
+  function openAuthModal(type) { closeModals(); document.getElementById(type === 'login' ? 'loginModal' : 'registerModal').style.display = 'flex'; }
+  function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+  function showToast(msg) { const t=document.getElementById('toastMsg'); t.innerText=msg; t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',2500); }
+
+  document.getElementById('customerSearchBtn')?.addEventListener('click', () => renderCustomerServices(document.getElementById('customerSearch').value));
+  document.getElementById('proceedCheckout')?.addEventListener('click', showCheckout);
+  document.getElementById('placeOrderBtn')?.addEventListener('click', placeOrder);
+  document.getElementById('addImageBtn')?.addEventListener('click', addMoodImage);
+  document.getElementById('saveMoodBoard')?.addEventListener('click', saveMoodBoard);
+  document.getElementById('submitQuiz')?.addEventListener('click', submitQuiz);
+
+  loadStorage();
+  window.onclick = e => { if(e.target.classList.contains('modal')) closeModals(); };
+</script>
+<footer><div class="container"><p><i class="fas fa-handshake"></i> EventEase – The two‑sided marketplace for events</p><p style="margin-top: 10px;">© 2025 • Customers hire, vendors grow</p></div></footer>
+</body>
+</html>
